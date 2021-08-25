@@ -12,6 +12,11 @@ export default {
       path: ':id',
       name: 'entry',
       component: () => import(/*webpackChunkName: "entry-view"*/ '../views/EntryView'),
+      props: (route) => {
+        return {
+          id: route.params.id,
+        };
+      },
     },
   ],
 };
