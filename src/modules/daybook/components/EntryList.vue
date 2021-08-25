@@ -3,6 +3,17 @@
     <div class="px-2 pt-2">
       <input v-model="term" type="text" class="form-control" placeholder="Search Entry" />
     </div>
+
+    <div class="mt-2 d-flex flex-column">
+      <button
+        @click="$router.push({ name: 'entry', params: { id: 'new' } })"
+        class="btn btn-primary mx-3"
+      >
+        <i class="fa fa-plus"></i>
+        Nueva entrada
+      </button>
+    </div>
+
     <div class="entry-scrollarea">
       <Entry v-for="entry in entriesByTerm" :key="entry.id" :entry="entry" />
     </div>

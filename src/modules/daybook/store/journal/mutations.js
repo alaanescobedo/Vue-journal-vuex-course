@@ -2,6 +2,27 @@
 //     return
 // }
 
-export const setEntries = (/*state*/) => {};
-export const updateEntry = (/*state*/) => {};
-export const addEntry = (/*state*/) => {};
+export const setEntries = (state, entries) => {
+  state.entries = [];
+  state.entries = [...state.entries, ...entries];
+  state.isLoading = false;
+  console.log('Entradas cargadas');
+};
+export const updateEntry = (state, entryUpdated) => {
+  const index = state.entries.map((entry) => entry.id).indexOf(entryUpdated.id);
+
+  state.entries[index] = entryUpdated;
+  console.log('Actualizado');
+};
+export const addEntry = (state, entryCreated) => {
+  state.entries = [entryCreated, ...state.entries];
+  console.log('Agregado');
+};
+
+export const deleteEntry = (state, deleteEntryID) => {
+  const newEntries = state.entries.filter((entry) => entry.id !== deleteEntryID);
+
+  state.entries = newEntries;
+
+  console.log('Borrado');
+};

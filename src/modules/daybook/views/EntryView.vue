@@ -8,11 +8,19 @@
       </div>
 
       <div>
-        <button class="btn btn-danger mx-2">
+        <input
+          type="file"
+          @change="onChooseImage"
+          ref="imageSelector"
+          v-show="false"
+          accept="image/png, image/jpeg"
+        />
+
+        <button v-if="entry.id" @click="onDeleteEntry" class="btn btn-danger mx-2">
           Delete
           <i class="fa fa-trash-alt"></i>
         </button>
-        <button class="btn btn-primary">
+        <button @click="onUploadImage" class="btn btn-primary">
           Upload Photo
           <i class="fa fa-upload"></i>
         </button>
@@ -22,19 +30,33 @@
     <hr />
 
     <div class="d-flex flex-column px-3 h-75">
-      <textarea v-model="entry.text" placeholder="Que sucedio hoy?"></textarea>
+      <textarea
+        @keydown.ctrl.enter="saveEntry"
+        @keydown.ctrl.i="onUploadImage"
+        v-model="entry.text"
+        placeholder="Que sucedio hoy?"
+      ></textarea>
     </div>
 
-    <img src="https://picsum.photos/536/354" alt="entry-picture" class="img-thumbnail" />
+    <img
+      v-if="entry.picture && !localImage"
+      :src="entry.picture"
+      alt="entry-picture"
+      class="img-thumbnail"
+    />
+
+    <img v-if="localImage" :src="localImage" alt="entry-picture" class="img-thumbnail" />
   </template>
 
-  <Fab icon="fa-save" />
+  <Fab icon="fa-save" @on:click="saveEntry" />
 </template>
 
 <script>
 import { defineAsyncComponent } from '@vue/runtime-core';
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import getDayMonthYear from '../helpers/getDayMonthYear';
+import Swal from 'sweetalert2';
+import uploadImage from '../helpers/uploadImage';
 
 export default {
   props: {
@@ -46,6 +68,8 @@ export default {
   data() {
     return {
       entry: null,
+      localImage: null,
+      fileImage: null,
     };
   },
   components: {
@@ -67,10 +91,80 @@ export default {
     },
   },
   methods: {
+    ...mapActions('journal', ['updateEntry', 'createEntry', 'deleteEntry']),
     loadEntry() {
-      const entry = this.getEntryById(this.id);
-      if (!entry) return this.$router.push({ name: 'no-entry' });
+      let entry;
+      if (this.id === 'new') {
+        entry = {
+          text: '',
+          date: new Date().getTime(),
+        };
+      } else {
+        entry = this.getEntryById(this.id);
+        this.localImage = null;
+        if (!entry) return this.$router.push({ name: 'no-entry' });
+      }
       this.entry = entry;
+    },
+    async saveEntry() {
+      new Swal({
+        title: 'Espere por favor',
+        allowOutsideClick: false,
+      });
+      Swal.showLoading();
+
+      const picture = await uploadImage(this.fileImage);
+      this.entry.picture = picture;
+
+      if (this.entry.id) {
+        //Actualizar entrada
+        await this.updateEntry(this.entry);
+        Swal.fire('Guardado', 'Entrada actualizada con exito', 'success');
+      } else {
+        //Crear nueva entrada
+        const id = await this.createEntry(this.entry);
+        this.$router.push({ name: 'entry', params: { id } });
+        Swal.fire('Guardado', 'Entrada registrada con exito', 'success');
+      }
+
+      this.fileImage = null;
+    },
+    async onDeleteEntry() {
+      const { isConfirmed } = await Swal.fire({
+        title: 'Estas seguro?',
+        text: 'Una vez borrado, no se puede recuperar',
+        showDenyButton: true,
+        confirmButtonText: 'Si, estoy seguro',
+      });
+
+      if (isConfirmed) {
+        new Swal({
+          title: 'Espere por favor',
+          allowOutsideClick: false,
+        });
+        Swal.showLoading();
+        await this.deleteEntry(this.entry.id);
+        this.$router.push({ name: 'no-entry' });
+        Swal.fire('Eliminado', '', 'success');
+      }
+    },
+    onChooseImage(event) {
+      const fileImage = event.target.files[0];
+
+      if (!fileImage) {
+        this.localImage = null;
+        this.fileImage = null;
+        return;
+      }
+
+      this.fileImage = fileImage;
+
+      const fr = new FileReader();
+      fr.onload = () => (this.localImage = fr.result);
+      fr.readAsDataURL(fileImage);
+    },
+    onUploadImage() {
+      this.$refs.imageSelector.click();
     },
   },
   created() {

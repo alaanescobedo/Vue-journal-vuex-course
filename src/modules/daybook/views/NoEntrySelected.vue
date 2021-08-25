@@ -5,7 +5,7 @@ import { defineAsyncComponent } from 'vue';
       No hay nada seleccionado
     </h1>
   </div>
-  <Fab icon="fa-plus" />
+  <Fab icon="fa-plus" @on:click="createEntry" />
 </template>
 
 <script>
@@ -14,6 +14,11 @@ import { defineAsyncComponent } from 'vue';
 export default {
   components: {
     Fab: defineAsyncComponent(() => import('../components/Fab.vue')),
+  },
+  methods: {
+    createEntry() {
+      this.$router.push({ name: 'entry', params: { id: 'new' } });
+    },
   },
 };
 </script>
