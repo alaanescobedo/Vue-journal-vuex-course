@@ -16,7 +16,12 @@
           accept="image/png, image/jpeg"
         />
 
-        <button v-if="entry.id" @click="onDeleteEntry" class="btn btn-danger mx-2">
+        <button
+          v-if="entry.id"
+          data-testId="btn-delete"
+          @click="onDeleteEntry"
+          class="btn btn-danger mx-2"
+        >
           Delete
           <i class="fa fa-trash-alt"></i>
         </button>
@@ -59,6 +64,7 @@ import Swal from 'sweetalert2';
 import uploadImage from '../helpers/uploadImage';
 
 export default {
+  name: 'EntryView',
   props: {
     id: {
       type: String,
@@ -107,7 +113,7 @@ export default {
       this.entry = entry;
     },
     async saveEntry() {
-      new Swal({
+      Swal.fire({
         title: 'Espere por favor',
         allowOutsideClick: false,
       });
@@ -138,7 +144,7 @@ export default {
       });
 
       if (isConfirmed) {
-        new Swal({
+        Swal.fire({
           title: 'Espere por favor',
           allowOutsideClick: false,
         });

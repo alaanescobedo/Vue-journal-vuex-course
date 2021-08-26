@@ -12,17 +12,16 @@ export const updateEntry = (state, entryUpdated) => {
   const index = state.entries.map((entry) => entry.id).indexOf(entryUpdated.id);
 
   state.entries[index] = entryUpdated;
-  console.log('Actualizado');
+  console.log('Entrada Actualizada');
 };
 export const addEntry = (state, entryCreated) => {
   state.entries = [entryCreated, ...state.entries];
-  console.log('Agregado');
+  console.log('Entrada agregada');
 };
-
 export const deleteEntry = (state, deleteEntryID) => {
   const newEntries = state.entries.filter((entry) => entry.id !== deleteEntryID);
 
   state.entries = newEntries;
 
-  console.log('Borrado');
+  console.log('Entrada borrada');
 };

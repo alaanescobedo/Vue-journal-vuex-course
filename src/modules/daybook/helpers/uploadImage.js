@@ -7,8 +7,6 @@ const uploadImage = async (file) => {
     formData.append('upload_preset', 'curso-vue');
     formData.append('file', file);
 
-    console.log(formData);
-
     const { data } = await cloudinaryApi.post('', formData);
     console.log(data);
     return data.secure_url;
