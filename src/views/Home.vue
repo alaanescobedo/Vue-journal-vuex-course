@@ -2,9 +2,8 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
   </div>
-  <button @click="goToDaybook" class="btn btn-primary">Primary</button>
-  <button @click="goToDaybook" class="btn btn-secondary">Secondary</button>
-  <button @click="goToDaybook" class="btn btn-success">Success</button>
+  <button @click="goToLogin" class="btn btn-primary">Login</button>
+  <button @click="goToDaybook" class="btn btn-primary">Daybook</button>
 </template>
 
 <script>
@@ -14,6 +13,9 @@ export default {
   methods: {
     goToDaybook() {
       this.$router.push({ name: 'no-entry' });
+    },
+    goToLogin() {
+      this.$router.push({ name: 'login' });
     },
   },
 };

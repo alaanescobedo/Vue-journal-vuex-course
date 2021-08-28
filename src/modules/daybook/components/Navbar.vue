@@ -9,18 +9,35 @@
       />
       Daybook
     </a>
+
+    <h4 class="text-white me-auto my-auto">Hola {{ username }}!</h4>
     <div class="d-flex">
-      <button class="btn btn-outline-info mx-2"><i class="fa fa-sign-out-alt"></i></button>
+      <button @click="onLogout" class="btn btn-outline-info mx-2">
+        <i class="fa fa-sign-out-alt"></i>
+      </button>
     </div>
   </nav>
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
+import useAuth from '../../auth/composables/useAuth';
 export default {
-  methods: {
-    goToHome() {
-      this.$router.push({ name: 'Home' });
-    },
+  setup() {
+    const router = useRouter();
+    const { username, logout } = useAuth();
+
+    return {
+      username,
+
+      onLogout: () => {
+        router.push({ name: 'login' });
+        logout();
+      },
+      goToHome: () => {
+        router.push({ name: 'Home' });
+      },
+    };
   },
 };
 </script>
