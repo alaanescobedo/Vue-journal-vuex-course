@@ -8,7 +8,6 @@ const uploadImage = async (file) => {
     formData.append('file', file);
 
     const { data } = await cloudinaryApi.post('', formData);
-    console.log(data);
     return data.secure_url;
   } catch (error) {
     console.log('Error al cargar la imagen');

@@ -45,9 +45,9 @@ import Swal from 'sweetalert2';
 export default {
   setup() {
     const userForm = ref({
-      name: 'Alan',
-      email: 'alan@gmail.com',
-      password: '123456',
+      name: '',
+      email: '',
+      password: '',
     });
 
     const router = useRouter();

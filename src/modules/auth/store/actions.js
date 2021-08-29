@@ -46,6 +46,7 @@ export const checkAuthentication = async ({ commit }) => {
 
   if (!idToken) {
     commit('logout');
+
     return { ok: false, message: 'No hay token' };
   }
 
@@ -62,7 +63,6 @@ export const checkAuthentication = async ({ commit }) => {
     return { ok: true };
   } catch (error) {
     commit('logout');
-    console.log(error.response);
     return { ok: false, message: error.response.data.error.message };
   }
 };

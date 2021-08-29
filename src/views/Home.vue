@@ -10,11 +10,17 @@
 export default {
   name: 'Home',
   components: {},
+  data() {
+    return {
+      numero: 1,
+    };
+  },
   methods: {
     goToDaybook() {
       this.$router.push({ name: 'no-entry' });
     },
     goToLogin() {
+      console.log(this);
       this.$router.push({ name: 'login' });
     },
   },
